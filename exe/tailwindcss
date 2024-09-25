@@ -1,7 +1,7 @@
 #! /usr/bin/env ruby
 # because rubygems shims assume a gem's executables are Ruby
 
-require "tailwindcss/commands"
+require "tailwindcss/ruby"
 
 begin
   command = [Tailwindcss::Ruby.executable, *ARGV]
