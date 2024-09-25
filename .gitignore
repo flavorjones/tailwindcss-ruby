@@ -3,6 +3,7 @@
 /_yardoc/
 /coverage/
 /doc/
+/exe/*/tailwindcss
 /pkg/
 /spec/reports/
 /tmp/
