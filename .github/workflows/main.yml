@@ -1,27 +1,34 @@
-name: Ruby
-
+name: ci
+concurrency:
+  group: "${{github.workflow}}-${{github.ref}}"
+  cancel-in-progress: true
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-
+    tags:
+      - v*.*.*
   pull_request:
+    types: [opened, synchronize]
+    branches:
+      - '*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Ruby ${{ matrix.ruby }}
     strategy:
+      fail-fast: false
       matrix:
-        ruby:
-          - '3.3.5'
-
+        ruby: ["2.7", "3.0", "3.1", "3.2", "3.3", "head"]
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
-    - name: Run the default task
-      run: bundle exec rake
+      - uses: actions/checkout@v4
+      - run: rm Gemfile.lock
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{matrix.ruby}}
+          rubygems: "3.4.22" # last version to support Ruby 2.7
+          bundler: latest
+          bundler-cache: true
+      - name: Run tests
+        run: bundle exec rake test
