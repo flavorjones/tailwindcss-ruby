@@ -1,0 +1,46 @@
+name: downstream
+concurrency:
+  group: "${{github.workflow}}-${{github.ref}}"
+  cancel-in-progress: true
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 * * 1,3,5" # At 08:00 on Monday, Wednesday, and Friday # https://crontab.guru/#0_8_*_*_1,3,5
+  push:
+    branches:
+      - main
+      - v*.*.x
+    tags:
+      - v*.*.*
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - '*'
+
+jobs:
+  downstream:
+    name: downstream-${{matrix.name}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - url: https://github.com/rails/tailwindcss-rails
+            name: tailwindcss-rails
+            command: "bin/test"
+            ruby: "3.3"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{matrix.ruby}}
+      - run: gem install bundler -v ">= 2.3.22" # for "add --path"
+      - run: bundle install --local || bundle install
+      - run: git clone --depth=1 ${{matrix.url}} ${{matrix.name}}
+      - name: ${{matrix.name}} test suite
+        working-directory: ${{matrix.name}}
+        run: |
+          bundle remove tailwindcss-ruby || true
+          bundle add tailwindcss-ruby --path=".."
+          bundle install --local || bundle install
+          ${{matrix.command}}
