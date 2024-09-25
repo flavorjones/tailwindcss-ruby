@@ -6,7 +6,7 @@ require_relative "ruby/upstream"
 module Tailwindcss
   module Ruby
     DEFAULT_DIR = File.expand_path(File.join(__dir__, "..", "..", "exe"))
-    GEM_NAME = "tailwindcss-rails"
+    GEM_NAME = "tailwindcss-ruby"
 
     # raised when the host platform is not supported by upstream tailwindcss's binary releases
     class UnsupportedPlatformException < StandardError
@@ -40,7 +40,7 @@ module Tailwindcss
         else
           if Tailwindcss::Ruby::Upstream::NATIVE_PLATFORMS.keys.none? { |p| Gem::Platform.match_gem?(Gem::Platform.new(p), GEM_NAME) }
             raise UnsupportedPlatformException, <<~MESSAGE
-              tailwindcss-rails does not support the #{platform} platform
+              #{GEM_NAME} does not support the #{platform} platform
               Please install tailwindcss following instructions at https://tailwindcss.com/docs/installation
             MESSAGE
           end
@@ -68,7 +68,7 @@ module Tailwindcss
 
             If you're still seeing this message after taking those steps, try running
             `bundle config` and ensure `force_ruby_platform` isn't set to `true`. See
-            https://github.com/rails/tailwindcss-rails#check-bundle_force_ruby_platform
+            https://github.com/flavorjones/tailwindcss-ruby#check-bundle_force_ruby_platform
             for more details.
           MESSAGE
         end
