@@ -79,7 +79,7 @@ $ bundle exec which tailwindcss
 
 # run the actual executable through the shim
 $ bundle exec tailwindcss --help
-["/path/to/installs/ruby/3.3.5/lib/ruby/gems/3.3.0/gems/tailwindcss-rails-2.6.0-x86_64-linux/exe/x86_64-linux/tailwindcss", "--help"]
+["/path/to/installs/ruby/3.3.5/lib/ruby/gems/3.3.0/gems/tailwindcss-ruby-0.1.0-x86_64-linux/exe/x86_64-linux/tailwindcss", "--help"]
 
 tailwindcss v3.4.3
 
