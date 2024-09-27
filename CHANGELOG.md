@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+## v4.0.0.alpha.25
+
+* Update to [Tailwind CSS v4.0.0-alpha.25](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0-alpha.25) @flavorjones
+
+  Note that this upstream release does not provide an armv7 release, nor a musl-compatible binary.
+
 ## v3.4.13 / 2023-09-26
 
 * This gem was extracted from `tailwindcss-rails`.
