@@ -1,6 +1,6 @@
 ## [Unreleased]
 
-## first / unreleased
+## v3.4.13 / 2023-09-26
 
 * This gem was extracted from `tailwindcss-rails`.
 

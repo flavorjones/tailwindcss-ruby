@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    tailwindcss-ruby (0.2.0)
+    tailwindcss-ruby (3.4.13)
 
 GEM
   remote: https://rubygems.org/
