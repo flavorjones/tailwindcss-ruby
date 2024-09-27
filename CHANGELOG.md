@@ -8,4 +8,5 @@
   from the Rails integration. This will allow users to upgrade TailwindCSS at a time of their
   choosing, and allow early adopters to start using the beta releases.
 
-  It should also make it easier for non-Rails Ruby projects to use tailwindcss (e.g., Jekyll and other web frameworks).
+  It should also make it easier for non-Rails Ruby projects to use tailwindcss (e.g., Jekyll and
+  other web frameworks).
