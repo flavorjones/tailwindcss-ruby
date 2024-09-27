@@ -1,6 +1,6 @@
 ## [Unreleased]
 
-## v4.0.0.alpha.25
+## v4.0.0.alpha.25 / 2023-09-26
 
 * Update to [Tailwind CSS v4.0.0-alpha.25](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0-alpha.25) @flavorjones
 
