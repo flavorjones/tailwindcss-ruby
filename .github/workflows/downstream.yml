@@ -36,6 +36,7 @@ jobs:
           ruby-version: ${{matrix.ruby}}
       - run: gem install bundler -v ">= 2.3.22" # for "add --path"
       - run: bundle install --local || bundle install
+      - run: bundle exec rake download
       - run: git clone --depth=1 ${{matrix.url}} ${{matrix.name}}
       - name: ${{matrix.name}} test suite
         working-directory: ${{matrix.name}}
