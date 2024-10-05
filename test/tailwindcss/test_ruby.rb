@@ -108,13 +108,11 @@ class Tailwindcss::TestRuby < Minitest::Spec
   end
 
   it ".executable raises ExecutableNotFoundException is TAILWINDCSS_INSTALL_DIR is set to a nonexistent dir" do
-    begin
-      ENV["TAILWINDCSS_INSTALL_DIR"] = "/does/not/exist"
-      assert_raises(Tailwindcss::Ruby::DirectoryNotFoundException) do
-        Tailwindcss::Ruby.executable
-      end
-    ensure
-      ENV["TAILWINDCSS_INSTALL_DIR"] = nil
+    ENV["TAILWINDCSS_INSTALL_DIR"] = "/does/not/exist"
+    assert_raises(Tailwindcss::Ruby::DirectoryNotFoundException) do
+      Tailwindcss::Ruby.executable
     end
+  ensure
+    ENV["TAILWINDCSS_INSTALL_DIR"] = nil
   end
 end

@@ -1,4 +1,3 @@
-# coding: utf-8
 #
 #  Rake tasks to manage native gem packages with binary executables from tailwindlabs/tailwindcss
 #
@@ -39,7 +38,7 @@
 #  - pkg/tailwindcss-ruby-1.0.0-x64-mingw-ucrt.gem
 #  - pkg/tailwindcss-ruby-1.0.0-x86_64-darwin.gem
 #  - pkg/tailwindcss-ruby-1.0.0-x86_64-linux.gem
-# 
+#
 #  Note that in addition to the native gems, a vanilla "ruby" gem will also be created without
 #  either the `exe/tailwindcss` script or a binary executable present.
 #
@@ -75,7 +74,7 @@ end
 TAILWINDCSS_RUBY_GEMSPEC = Bundler.load_gemspec("tailwindcss-ruby.gemspec")
 
 # prepend the download task before the Gem::PackageTask tasks
-task :package => :download
+task package: :download
 
 gem_path = Gem::PackageTask.new(TAILWINDCSS_RUBY_GEMSPEC).define
 desc "Build the ruby gem"
@@ -103,12 +102,10 @@ Tailwindcss::Ruby::Upstream::NATIVE_PLATFORMS.each do |platform, filename|
       warn "Downloading #{exepath} from #{release_url} ..."
 
       # lazy, but fine for now.
-      URI.open(release_url) do |remote|
-        File.open(exepath, "wb") do |local|
-          local.write(remote.read)
-        end
+      URI.parse(release_url).open do |remote|
+        File.binwrite(exepath, remote.read)
       end
-      FileUtils.chmod(0755, exepath, verbose: true)
+      FileUtils.chmod(0o755, exepath, verbose: true)
     end
   end
 end
@@ -119,11 +116,11 @@ task "check" => exepaths do
   sha_url = if File.exist?(sha_filename)
     sha_filename
   else
-    sha_url = tailwindcss_download_url("sha256sums.txt")
+    tailwindcss_download_url("sha256sums.txt")
   end
   gemspec = TAILWINDCSS_RUBY_GEMSPEC
 
-  checksums = URI.open(sha_url).each_line.map do |line|
+  checksums = URI.parse(sha_url).open.each_line.map do |line|
     checksum, file = line.split
     [File.basename(file), checksum]
   end.to_h
