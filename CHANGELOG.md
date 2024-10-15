@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## v3.4.14
+
+* Update `tailwindcss` to [v3.4.14](https://github.com/tailwindlabs/tailwindcss/releases/tag/v3.4.14). (#8) @flavorjones
+
+
 ## v3.4.13 / 2023-09-26
 
 * This gem was extracted from `tailwindcss-rails`.
