@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## v4.0.0.alpha.27
+
+* Update to [Tailwind CSS v4.0.0-alpha.27](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0-alpha.27) (#9) @flavorjones
+
+  Note that this upstream release does not provide an armv7 release, nor a musl-compatible binary.
+
+
 ## v4.0.0.alpha.26 / 2024-10-03
 
 * Update to [Tailwind CSS v4.0.0-alpha.26](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0-alpha.26) @flavorjones

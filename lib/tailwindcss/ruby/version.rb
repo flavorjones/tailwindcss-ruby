@@ -2,6 +2,6 @@
 
 module Tailwindcss
   module Ruby
-    VERSION = "4.0.0.alpha.26"
+    VERSION = "4.0.0.alpha.27"
   end
 end
