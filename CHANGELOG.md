@@ -1,5 +1,12 @@
 # tailwindcss-ruby changelog
 
+## v4.0.0.alpha.34
+
+* Update to [Tailwind CSS v4.0.0-alpha.34](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0-alpha.34) (#18) @flavorjones
+
+  Note that this upstream release does not provide an armv7 release, nor a musl-compatible binary.
+
+
 ## v4.0.0.alpha.33
 
 * Update to [Tailwind CSS v4.0.0-alpha.33](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0-alpha.33). Also see release notes for [Tailwind CSS v4.0.0-alpha.32](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0-alpha.32) (#17) @flavorjones
