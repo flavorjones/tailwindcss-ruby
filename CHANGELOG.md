@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## v3.4.15
+
+* Update `tailwindcss` to [v3.4.15](https://github.com/tailwindlabs/tailwindcss/releases/tag/v3.4.15). (#19) @flavorjones
+
+
 ## v3.4.14
 
 * Update `tailwindcss` to [v3.4.14](https://github.com/tailwindlabs/tailwindcss/releases/tag/v3.4.14). (#8) @flavorjones
