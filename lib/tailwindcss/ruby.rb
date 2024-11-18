@@ -41,7 +41,8 @@ module Tailwindcss
           if Tailwindcss::Ruby::Upstream::NATIVE_PLATFORMS.keys.none? { |p| Gem::Platform.match_gem?(Gem::Platform.new(p), GEM_NAME) }
             raise UnsupportedPlatformException, <<~MESSAGE
               #{GEM_NAME} does not support the #{platform} platform
-              Please install tailwindcss following instructions at https://tailwindcss.com/docs/installation
+              See https://github.com/flavorjones/tailwindcss-ruby#using-a-local-installation-of-tailwindcss
+              for more details.
             MESSAGE
           end
 
