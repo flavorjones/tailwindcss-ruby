@@ -33,7 +33,9 @@ gem install tailwindcss-ruby
 
 ### Using a local installation of `tailwindcss`
 
-If you are not able to use the vendored standalone executables (for example, if you're on an unsupported platform), you can use a local installation of the `tailwindcss` executable by setting an environment variable named `TAILWINDCSS_INSTALL_DIR` to the directory path containing the executable.
+<!-- note that this section's title is deeplinked from an error message, do not change -->
+
+If you are not able to use the vendored standalone executables (for example, if you're on an unsupported platform), you can use a [local installation](https://tailwindcss.com/docs/installation) of the `tailwindcss` executable by setting an environment variable named `TAILWINDCSS_INSTALL_DIR` to the directory path containing the executable.
 
 For example, if you've installed `tailwindcss` so that the executable is found at `/path/to/node_modules/bin/tailwindcss`, then you should set your environment variable like so:
 
