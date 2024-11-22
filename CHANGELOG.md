@@ -2,7 +2,7 @@
 
 ## v4.0.0.beta.1
 
-* Update to [Tailwind CSS v4.0.0-beta.1](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0-beta.1) (#18) @flavorjones
+* Update to [Tailwind CSS v4.0.0-beta.1](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0-beta.1) (#26) @flavorjones
 
   Prerelease documentation at https://tailwindcss.com/docs/v4-beta
 
