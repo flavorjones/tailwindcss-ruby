@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    tailwindcss-ruby (4.0.0.alpha.36)
+    tailwindcss-ruby (4.0.0.beta.1)
 
 GEM
   remote: https://rubygems.org/
@@ -10,7 +10,7 @@ GEM
     json (2.8.2)
     language_server-protocol (3.17.0.3)
     lint_roller (1.1.0)
-    minitest (5.25.1)
+    minitest (5.25.2)
     parallel (1.26.3)
     parser (3.3.6.0)
       ast (~> 2.4.1)
