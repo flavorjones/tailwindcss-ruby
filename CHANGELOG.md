@@ -1,5 +1,14 @@
 # tailwindcss-ruby changelog
 
+## v4.0.0.beta.6
+
+* Update to [Tailwind CSS v4.0.0-beta.6](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0-beta.6) @flavorjones
+
+  Prerelease documentation at https://tailwindcss.com/docs/v4-beta
+
+  Note that this upstream release does not provide an armv7 release, nor a musl-compatible binary.
+
+
 ## v4.0.0.beta.5
 
 * Update to [Tailwind CSS v4.0.0-beta.5](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0-beta.5) @flavorjones
