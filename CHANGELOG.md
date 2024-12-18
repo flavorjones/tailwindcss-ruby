@@ -3,8 +3,6 @@
 * Update to [Tailwind CSS v3.4.17](https://github.com/tailwindlabs/tailwindcss/releases/tag/v3.4.17) @flavorjones
 
 
-## [Unreleased]
-
 ## v3.4.16
 
 * Update `tailwindcss` to [v3.4.16](https://github.com/tailwindlabs/tailwindcss/releases/tag/v3.4.16). (#33) @flavorjones
