@@ -6,7 +6,9 @@
 
   Prerelease documentation at https://tailwindcss.com/docs/v4-beta
 
-  Note that this upstream release does not provide an armv7 release, nor a musl-compatible binary.
+  Note that this upstream release finally includes linux-musl binaries, and so the native gem platforms are now specialized to `{x86_64,aarch64}-linux-{gnu,musl}`. You may need to update the platforms in your Gemfile.lock using `bundle lock --add-platform`.
+
+  However, there are still no upstream armv7 binaries.
 
 
 ## v4.0.0.beta.8
