@@ -25,8 +25,10 @@ jobs:
           - "x64-mingw-ucrt"
           - "x86_64-darwin"
           - "arm64-darwin"
-          - "x86_64-linux"
-#          - "arm-linux"
+          - "x86_64-linux-gnu"
+          - "x86_64-linux-musl"
+          - "aarch64-linux-gnu"
+          - "aarch64-linux-musl"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -57,7 +59,7 @@ jobs:
       - run: "gem install pkg/tailwindcss-ruby-*.gem"
       - run: "tailwindcss 2>&1 | fgrep 'ERROR: Cannot find the tailwindcss executable'"
 
-  linux-install:
+  linux-x86_64-gnu-install:
     needs: ["package"]
     runs-on: ubuntu-latest
     steps:
@@ -66,42 +68,65 @@ jobs:
           ruby-version: "3.2"
       - uses: actions/download-artifact@v4
         with:
-          name: gem-x86_64-linux
+          name: gem-x86_64-linux-gnu
           path: pkg
       - run: "gem install pkg/tailwindcss-ruby-*.gem"
       - run: "tailwindcss --help"
 
-  # linux-musl-install:
-  #   needs: ["package"]
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: ruby:3.2-alpine
-  #   steps:
-  #     - uses: actions/download-artifact@v4
-  #       with:
-  #         name: gem-x86_64-linux
-  #         path: pkg
-  #     - run: "apk add build-base" # to compile racc, etc.
-  #     - run: "gem update --system" # let's make sure the latest is working for us (upstream test, see #200)
-  #     - run: "gem install pkg/tailwindcss-ruby-*.gem"
-  #     - run: "tailwindcss --help"
+  linux-x86_64-musl-install:
+    needs: ["package"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: gem-x86_64-linux-musl
+          path: pkg
+      - run: |
+          docker run --rm -v $PWD:/tailwindcss-ruby -w /tailwindcss-ruby \
+            ruby:3.2-alpine \
+            sh -c "
+              apk add build-base
+              gem install pkg/tailwindcss-ruby-*.gem
+              tailwindcss --help
+            "
 
-  # linux-arm-install:
-  #   needs: ["package"]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/download-artifact@v4
-  #       with:
-  #         name: gem-arm-linux
-  #         path: pkg
-  #     - run: |
-  #         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-  #         docker run --rm -v "$(pwd):/test" -w /test --platform=linux/arm/v7 ruby:3.2 \
-  #           /bin/bash -c "
-  #             set -ex
-  #             gem install pkg/tailwindcss-ruby-*.gem
-  #             tailwindcss --help
-  #           "
+  linux-aarch64-gnu-install:
+    needs: ["package"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+      - uses: actions/download-artifact@v4
+        with:
+          name: gem-aarch64-linux-gnu
+          path: pkg
+      - run: |
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+          docker run --rm -v $PWD:/tailwindcss-ruby -w /tailwindcss-ruby \
+            --platform=linux/arm64/v8 ruby:3.2 \
+            sh -c "
+              gem install pkg/tailwindcss-ruby-*.gem
+              tailwindcss --help
+            "
+
+  linux-aarch64-musl-install:
+    needs: ["package"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: gem-aarch64-linux-musl
+          path: pkg
+      - run: |
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+          docker run --rm -v $PWD:/tailwindcss-ruby -w /tailwindcss-ruby \
+            --platform=linux/arm64/v8 ruby:3.2-alpine \
+            sh -c "
+              apk add build-base
+              gem install pkg/tailwindcss-ruby-*.gem
+              tailwindcss --help
+            "
 
   darwin-x86_64-install:
     needs: ["package"]
