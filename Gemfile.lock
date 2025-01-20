@@ -12,14 +12,14 @@ GEM
     lint_roller (1.1.0)
     minitest (5.25.4)
     parallel (1.26.3)
-    parser (3.3.6.0)
+    parser (3.3.7.0)
       ast (~> 2.4.1)
       racc
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.2.1)
-    regexp_parser (2.9.3)
-    rubocop (1.69.2)
+    regexp_parser (2.10.0)
+    rubocop (1.70.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -31,14 +31,14 @@ GEM
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.37.0)
       parser (>= 3.3.1.0)
-    rubocop-performance (1.23.0)
+    rubocop-performance (1.23.1)
       rubocop (>= 1.48.1, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
     ruby-progressbar (1.13.0)
-    standard (1.43.0)
+    standard (1.44.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
-      rubocop (~> 1.69.1)
+      rubocop (~> 1.70.0)
       standard-custom (~> 1.0.0)
       standard-performance (~> 1.6)
     standard-custom (1.0.2)
@@ -47,7 +47,7 @@ GEM
     standard-performance (1.6.0)
       lint_roller (~> 1.1)
       rubocop-performance (~> 1.23.0)
-    unicode-display_width (3.1.2)
+    unicode-display_width (3.1.4)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
 
@@ -58,7 +58,7 @@ PLATFORMS
 DEPENDENCIES
   minitest (~> 5.25)
   rake (~> 13.0)
-  standard (~> 1.43)
+  standard (~> 1.44)
   tailwindcss-ruby!
 
 BUNDLED WITH
