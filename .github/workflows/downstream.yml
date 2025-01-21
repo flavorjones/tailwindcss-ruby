@@ -9,7 +9,7 @@ on:
   push:
     branches:
       - main
-      - v*.*.x
+      - v4-prerelease
     tags:
       - v*.*.*
   pull_request:
