@@ -1,5 +1,15 @@
 # tailwindcss-ruby changelog
 
+## v4.0.0.beta.10
+
+* Update to [Tailwind CSS v4.0.0-beta.10](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0-beta.10) @excid3
+
+  Prerelease documentation at https://tailwindcss.com/docs/v4-beta
+
+  Note that this upstream release finally includes linux-musl binaries, and so the native gem platforms are now specialized to `{x86_64,aarch64}-linux-{gnu,musl}`. You may need to update the platforms in your Gemfile.lock using `bundle lock --add-platform`.
+
+  However, there are still no upstream armv7 binaries.
+
 ## v4.0.0.beta.9
 
 * Update to [Tailwind CSS v4.0.0-beta.9](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0-beta.9) @flavorjones

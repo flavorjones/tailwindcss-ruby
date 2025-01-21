@@ -44,6 +44,7 @@ jobs:
       - name: ${{matrix.name}} test suite
         working-directory: ${{matrix.name}}
         run: |
+          rm -f Gemfile.lock
           bundle remove tailwindcss-ruby || true
           bundle add tailwindcss-ruby --path=".."
           bundle install --local || bundle install
