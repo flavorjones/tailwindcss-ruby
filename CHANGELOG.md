@@ -4,7 +4,14 @@
 
 * Update to [Tailwind CSS v4.0.0](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.0) @flavorjones
 
-  Upgrade guide at https://tailwindcss.com/docs/upgrade-guide
+  The upstream upgrade guide is at https://tailwindcss.com/docs/upgrade-guide.
+
+  For Rails users, if you want to upgrade you may want to check out [TailwindCSS v4 - upgrade experience report · rails/tailwindcss-rails · Discussion #450](https://github.com/rails/tailwindcss-rails/discussions/450). If you're not ready to upgrade, then pin your project to the 3.x releases:
+
+  ```ruby
+  # If you're not ready to upgrade yet!
+  gem "tailwindcss-ruby", "~> 3.4"
+  ```
 
 
 ## v4.0.0.beta.10
