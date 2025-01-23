@@ -5,6 +5,20 @@ A self-contained `tailwindcss` executable, wrapped up in a ruby gem. That's it. 
 If you're looking to leverage tailwindcss in your Rails project, please see https://github.com/rails/tailwindcss-rails for integration that is supported by the Rails team.
 
 
+## ⚠ Upgrade note ⚠
+
+To upgrade an existing application from v3 to v4, I strongly urge you to read the upstream upgrade guide: https://tailwindcss.com/docs/upgrade-guide.
+
+For Rails users, if you want to upgrade you may want to check out [TailwindCSS v4 - upgrade experience report · rails/tailwindcss-rails · Discussion #450](https://github.com/rails/tailwindcss-rails/discussions/450).
+
+In any case, if you're not ready to upgrade to v4, then pin your project to the 3.x releases:
+
+```ruby
+# If you're not ready to upgrade yet!
+gem "tailwindcss-ruby", "~> 3.4"
+```
+
+
 ## Installation
 
 This gem wraps [the standalone executable version](https://tailwindcss.com/blog/standalone-cli) of the Tailwind CSS v4 framework. These executables are platform specific, so there are actually separate underlying gems per platform, but the correct gem will automatically be picked for your platform.
