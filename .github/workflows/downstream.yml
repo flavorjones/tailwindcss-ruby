@@ -29,8 +29,12 @@ jobs:
             command: "bin/test"
             ruby: "3.3"
           - url: https://github.com/rails/tailwindcss-rails
-            name: rails-integration
-            command: "env TAILWINDCSSOPTS=--path=../../.. test/integration/user_journey_test.sh"
+            name: rails-install
+            command: "env TAILWINDCSSOPTS=--path=../../.. test/integration/user_install_test.sh"
+            ruby: "3.3"
+          - url: https://github.com/rails/tailwindcss-rails
+            name: rails-upgrade
+            command: "env TAILWINDCSSOPTS=--path=../../.. test/integration/user_upgrade_test.sh"
             ruby: "3.3"
     runs-on: ubuntu-latest
     steps:
