@@ -1,5 +1,12 @@
 # tailwindcss-ruby changelog
 
+## v4.0.2
+
+* Update to [Tailwind CSS v4.0.2](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.2) @flavorjones
+
+  Upgrade guide at https://tailwindcss.com/docs/upgrade-guide
+
+
 ## v4.0.1
 
 * Update to [Tailwind CSS v4.0.1](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.1) @flavorjones
