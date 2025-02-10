@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+set -eu
+set -o pipefail
+
+if [[ $# -lt 1 ]] ; then
+  echo "Usage: $(basename $0) <upstream-tag>"
+  echo
+  echo "Where <upstream_version> is the tag name of the Tailwind CSS release."
+  exit 1
+fi
+
+PAGER="" # we don't want gh to use a pager
+git_cmd=$(command -v git)
+gh_cmd=$(command -v gh)
+sed_cmd=$(command -v sed)
+
+fail() {
+  echo "Error: $*" >&2
+  exit 1
+}
+
+upstream_tag=$1
+gem_version=$(echo $upstream_tag | $sed_cmd -E 's/^v//' | sed -E 's/-/./')
+gem_tag="v${gem_version}"
+
+github_user=$($git_cmd config github.user || true)
+if [[ -z "$github_user" ]]; then
+  fail "github.user is not set in git config"
+fi
+
+# view the release. will fail if the release does not exist
+$gh_cmd release view ${upstream_tag} --repo tailwindlabs/tailwindcss
+
+# get on the right starting branch
+if [[ -n "$($git_cmd status --porcelain --untracked-files=no)" ]]; then
+  fail "found uncommitted changes"
+fi
+
+if [[ $upstream_tag =~ ^v4 ]] ; then
+  base_branch="v4.x"
+
+  changelog_extra=$(cat <<EOF
+
+  Upgrade guide at https://tailwindcss.com/docs/upgrade-guide
+EOF
+)
+elif [[ $upstream_tag =~ ^v3 ]] ; then
+  base_branch="main"
+  changelog_extra=""
+else
+  fail "Whoa! A new major version? Need to update the ${0} script."
+fi
+
+$git_cmd switch $base_branch
+
+if ! $git_cmd rev-parse --abbrev-ref @{push} >/dev/null 2>&1; then
+  fail "current branch is not tracking a remote branch"
+fi
+
+#
+# modify the upstream version and gem version
+#
+$sed_cmd -E -i "s/^(\s+)VERSION\s+=.*/\1VERSION = \"${upstream_tag}\"/" lib/tailwindcss/ruby/upstream.rb
+$sed_cmd -E -i "s/^(\s+)VERSION\s+=.*/\1VERSION = \"${gem_version}\"/" lib/tailwindcss/ruby/version.rb
+
+bundle install
+
+#
+# modify the changelog
+#
+replacement_text=$(cat <<EOF
+## ${gem_tag}
+
+* Update to [Tailwind CSS ${upstream_tag}](https://github.com/tailwindlabs/tailwindcss/releases/tag/${upstream_tag}) @${github_user}
+${changelog_extra}
+EOF
+)
+# substitute newlines with '\n' so sed will do the right things
+replacement_text=$(echo "$replacement_text" | tr '\n' '\t' | sed -E 's/\t/\\n/g')
+$sed_cmd -E -i "0,/^##/{s|^##|${replacement_text}\n\n##|}" CHANGELOG.md
+
+#
+#  check if the packages match the checksums
+#
+bundle exec rake clobber download
+
+#
+#  commit to a branch
+#
+git switch -c flavorjones-dep-tailwindcss-${upstream_tag}
+git add lib CHANGELOG.md Gemfile*
+git commit -m "dep: update to Tailwind CSS ${upstream_tag}
+
+https://github.com/tailwindlabs/tailwindcss/releases/tag/${upstream_tag}
+"
+
+echo "Now push the current branch and create a PR."
+exit 0
