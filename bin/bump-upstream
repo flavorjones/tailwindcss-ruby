@@ -39,15 +39,8 @@ fi
 
 if [[ $upstream_tag =~ ^v4 ]] ; then
   base_branch="v4.x"
-
-  changelog_extra=$(cat <<EOF
-
-  Upgrade guide at https://tailwindcss.com/docs/upgrade-guide
-EOF
-)
 elif [[ $upstream_tag =~ ^v3 ]] ; then
   base_branch="main"
-  changelog_extra=""
 else
   fail "Whoa! A new major version? Need to update the ${0} script."
 fi
@@ -73,7 +66,6 @@ replacement_text=$(cat <<EOF
 ## ${gem_tag}
 
 * Update to [Tailwind CSS ${upstream_tag}](https://github.com/tailwindlabs/tailwindcss/releases/tag/${upstream_tag}) @${github_user}
-${changelog_extra}
 EOF
 )
 # substitute newlines with '\n' so sed will do the right things
