@@ -5,11 +5,6 @@
 * Update to [Tailwind CSS v4.0.7](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.7) @flavorjones
 
 
-## v4.0.7
-
-* Update to [Tailwind CSS v4.0.7](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.7) @flavorjones
-
-
 ## v4.0.6
 
 * Update to [Tailwind CSS v4.0.6](https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.0.6) @flavorjones
