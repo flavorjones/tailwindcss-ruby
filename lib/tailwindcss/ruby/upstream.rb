@@ -1,7 +1,7 @@
 module Tailwindcss
   module Ruby
     module Upstream
-      VERSION = "v4.0.12"
+      VERSION = "v4.0.14"
 
       # rubygems platform name => upstream release filename
       NATIVE_PLATFORMS = {
