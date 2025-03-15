@@ -93,28 +93,20 @@ $ bundle exec which tailwindcss
 
 # run the actual executable through the shim
 $ bundle exec tailwindcss --help
-["/path/to/installs/ruby/3.3.5/lib/ruby/gems/3.3.0/gems/tailwindcss-ruby-0.1.0-x86_64-linux/exe/x86_64-linux/tailwindcss", "--help"]
-
-tailwindcss v3.4.3
+["/path/to/installs/installs/ruby/3.4.2/lib/ruby/gems/3.4.0/gems/tailwindcss-ruby-4.0.12-x86_64-linux-gnu/exe/x86_64-linux-gnu/tailwindcss", "--help"]
+≈ tailwindcss v4.0.12
 
 Usage:
-   tailwindcss [--input input.css] [--output output.css] [--watch] [options...]
-   tailwindcss init [--full] [--postcss] [options...]
-
-Commands:
-   init [options]
+  tailwindcss [--input input.css] [--output output.css] [--watch] [options…]
 
 Options:
-   -i, --input              Input file
-   -o, --output             Output file
-   -w, --watch              Watch for changes and rebuild as needed
-   -p, --poll               Use polling instead of filesystem events when watching
-       --content            Content paths to use for removing unused classes
-       --postcss            Load custom PostCSS configuration
-   -m, --minify             Minify the output
-   -c, --config             Path to a custom config file
-       --no-autoprefixer    Disable autoprefixer
-   -h, --help               Display usage information
+  -i, --input ··········· Input file
+  -o, --output ·········· Output file [default: `-`]
+  -w, --watch ··········· Watch for changes and rebuild as needed
+  -m, --minify ·········· Optimize and minify the output
+      --optimize ········ Optimize the output without minifying
+      --cwd ············· The current working directory [default: `.`]
+  -h, --help ············ Display usage information
 ```
 
 
