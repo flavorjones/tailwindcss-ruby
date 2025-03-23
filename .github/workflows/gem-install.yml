@@ -17,19 +17,20 @@ on:
 
 jobs:
   package:
+    name: "package (${{ matrix.platform }})"
     strategy:
       fail-fast: false
       matrix:
         platform:
           - "ruby"
-          - "x64-mingw32"
-          - "x64-mingw-ucrt"
-          - "x86_64-darwin"
-          - "arm64-darwin"
-          - "x86_64-linux-gnu"
-          - "x86_64-linux-musl"
           - "aarch64-linux-gnu"
           - "aarch64-linux-musl"
+          - "arm64-darwin"
+          - "x64-mingw-ucrt"
+          - "x64-mingw32"
+          - "x86_64-darwin"
+          - "x86_64-linux-gnu"
+          - "x86_64-linux-musl"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,6 +48,7 @@ jobs:
           retention-days: 1
 
   vanilla-install:
+    name: "install (ruby)"
     needs: ["package"]
     runs-on: ubuntu-latest
     steps:
@@ -60,127 +62,52 @@ jobs:
       - run: "gem install pkg/tailwindcss-ruby-*.gem"
       - run: "tailwindcss 2>&1 | fgrep 'ERROR: Cannot find the tailwindcss executable'"
 
-  linux-x86_64-gnu-install:
-    needs: ["package"]
-    runs-on: ubuntu-latest
+  install-matrix:
+    name: "install (${{ matrix.platform }})"
+    needs: [ "package" ]
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: [ "3.4" ]
+        platform:
+          - "aarch64-linux-gnu"
+          - "aarch64-linux-musl"
+          - "arm64-darwin"
+          - "x64-mingw-ucrt"
+          # - "x64-mingw32" # because it's on a different version of ruby, we just add it in an "include" below
+          - "x86_64-darwin"
+          - "x86_64-linux-gnu"
+          - "x86_64-linux-musl"
+        include:
+          - { platform: aarch64-linux-gnu, docker_platform: "--platform=linux/arm64/v8" }
+          - { platform: aarch64-linux-musl, docker_tag: "-alpine", docker_platform: "--platform=linux/arm64/v8", bootstrap: "apk add build-base &&" }
+          - { platform: arm64-darwin, runs_on: macos-14 }
+          - { platform: x64-mingw-ucrt, runs_on: windows-latest }
+          - { platform: x64-mingw32, runs_on: windows-latest, ruby: "3.0" }
+          - { platform: x86_64-darwin, runs_on: macos-13 }
+          - { platform: x86_64-linux-musl, docker_tag: "-alpine", bootstrap: "apk add build-base &&" }
+    runs-on: ${{ matrix.runs_on || 'ubuntu-latest' }}
     steps:
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.2"
       - uses: actions/download-artifact@v4
         with:
-          name: gem-x86_64-linux-gnu
+          name: gem-${{ matrix.platform }}
           path: pkg
-      - run: "gem install pkg/tailwindcss-ruby-*.gem"
-      - run: "tailwindcss --help"
-
-  linux-x86_64-musl-install:
-    needs: ["package"]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
+      - if: ${{ matrix.runs_on }}
+        uses: ruby/setup-ruby@v1
         with:
-          name: gem-x86_64-linux-musl
-          path: pkg
-      - run: |
+          ruby-version: ${{ matrix.ruby }}
+      - if: ${{ matrix.runs_on }}
+        run: "gem install pkg/tailwindcss-ruby-*.gem"
+      - if: ${{ matrix.runs_on }}
+        run: "tailwindcss --help"
+      - if: ${{ (! matrix.runs_on) && matrix.docker_platform }}
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      - if: ${{ ! matrix.runs_on }}
+        run: |
           docker run --rm -v $PWD:/tailwindcss-ruby -w /tailwindcss-ruby \
-            ruby:3.2-alpine \
+            ${{ matrix.docker_platform }} ruby:${{ matrix.ruby }}${{ matrix.docker_tag }} \
             sh -c "
-              apk add build-base
+              ${{ matrix.bootstrap }}
               gem install pkg/tailwindcss-ruby-*.gem
               tailwindcss --help
             "
-
-  linux-aarch64-gnu-install:
-    needs: ["package"]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.2"
-      - uses: actions/download-artifact@v4
-        with:
-          name: gem-aarch64-linux-gnu
-          path: pkg
-      - run: |
-          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-          docker run --rm -v $PWD:/tailwindcss-ruby -w /tailwindcss-ruby \
-            --platform=linux/arm64/v8 ruby:3.2 \
-            sh -c "
-              gem install pkg/tailwindcss-ruby-*.gem
-              tailwindcss --help
-            "
-
-  linux-aarch64-musl-install:
-    needs: ["package"]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: gem-aarch64-linux-musl
-          path: pkg
-      - run: |
-          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-          docker run --rm -v $PWD:/tailwindcss-ruby -w /tailwindcss-ruby \
-            --platform=linux/arm64/v8 ruby:3.2-alpine \
-            sh -c "
-              apk add build-base
-              gem install pkg/tailwindcss-ruby-*.gem
-              tailwindcss --help
-            "
-
-  darwin-x86_64-install:
-    needs: ["package"]
-    runs-on: macos-13
-    steps:
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.2"
-      - uses: actions/download-artifact@v4
-        with:
-          name: gem-x86_64-darwin
-          path: pkg
-      - run: "gem install pkg/tailwindcss-ruby-*.gem"
-      - run: "tailwindcss --help"
-
-  darwin-arm64-install:
-    needs: ["package"]
-    runs-on: macos-14
-    steps:
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.2"
-      - uses: actions/download-artifact@v4
-        with:
-          name: gem-arm64-darwin
-          path: pkg
-      - run: "gem install pkg/tailwindcss-ruby-*.gem"
-      - run: "tailwindcss --help"
-
-  windows-install:
-    needs: ["package"]
-    runs-on: windows-latest
-    steps:
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.0"
-      - uses: actions/download-artifact@v4
-        with:
-          name: gem-x64-mingw32
-          path: pkg
-      - run: "gem install pkg/tailwindcss-ruby-*.gem"
-      - run: "tailwindcss --help"
-
-  windows-ucrt-install:
-    needs: ["package"]
-    runs-on: windows-2022
-    steps:
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.2"
-      - uses: actions/download-artifact@v4
-        with:
-          name: gem-x64-mingw-ucrt
-          path: pkg
-      - run: "gem install pkg/tailwindcss-ruby-*.gem"
-      - run: "tailwindcss --help"
