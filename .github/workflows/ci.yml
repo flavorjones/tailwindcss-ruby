@@ -98,10 +98,10 @@ jobs:
         include:
           - { platform: aarch64-linux-gnu, docker_platform: "--platform=linux/arm64/v8" }
           - { platform: aarch64-linux-musl, docker_tag: "-alpine", docker_platform: "--platform=linux/arm64/v8", bootstrap: "apk add build-base &&" }
-          - { platform: arm64-darwin, runs_on: macos-14 }
+          - { platform: arm64-darwin, runs_on: macos-15 }
           - { platform: x64-mingw-ucrt, runs_on: windows-latest }
           - { platform: x64-mingw32, runs_on: windows-latest, ruby: "3.0" }
-          - { platform: x86_64-darwin, runs_on: macos-13 }
+          - { platform: x86_64-darwin, runs_on: macos-15-intel }
           - { platform: x86_64-linux-musl, docker_tag: "-alpine", bootstrap: "apk add build-base &&" }
     runs-on: ${{ matrix.runs_on || 'ubuntu-latest' }}
     steps:
