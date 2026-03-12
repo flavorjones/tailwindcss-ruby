@@ -1,4 +1,128 @@
-# empty file so I can iterate on the workflow in a PR
 name: upstream
+
+concurrency:
+  group: upstream
+
 on:
+  schedule:
+    - cron: "0 15 * * *" # daily at 15:00 UTC
   workflow_dispatch:
+    inputs:
+      upstream_tag:
+        description: "Upstream tag to bump to (e.g., v4.2.1). Leave blank to auto-detect latest."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  bump:
+    name: "Detect and PR new upstream release"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Determine upstream tag
+        id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUTS_UPSTREAM_TAG: ${{ inputs.upstream_tag }}
+        run: |
+          if [[ -n "${INPUTS_UPSTREAM_TAG}" ]]; then
+            upstream_tag="${INPUTS_UPSTREAM_TAG}"
+          else
+            upstream_tag=$(gh release view --repo tailwindlabs/tailwindcss --json tagName --jq '.tagName')
+          fi
+
+          # verify the release exists upstream
+          gh release view "${upstream_tag}" --repo tailwindlabs/tailwindcss --json tagName > /dev/null
+
+          current_tag=$(grep 'VERSION' lib/tailwindcss/ruby/upstream.rb | sed -E 's/.*"(.*)".*/\1/')
+
+          echo "upstream_tag=${upstream_tag}" >> "$GITHUB_OUTPUT"
+          echo "current_tag=${current_tag}" >> "$GITHUB_OUTPUT"
+
+          if [[ "$upstream_tag" == "$current_tag" ]]; then
+            echo "Already up to date (${current_tag})"
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "New release: ${current_tag} → ${upstream_tag}"
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check for existing PR
+        if: steps.upstream.outputs.needed == 'true'
+        id: existing_pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STEPS_UPSTREAM_OUTPUTS_UPSTREAM_TAG: ${{ steps.upstream.outputs.upstream_tag }}
+        run: |
+          upstream_tag="${STEPS_UPSTREAM_OUTPUTS_UPSTREAM_TAG}"
+          branch="bot-dep-tailwindcss-${upstream_tag}"
+          pr=$(gh pr list --head "${branch}" --json number --jq '.[0].number // empty')
+          if [[ -n "$pr" ]]; then
+            echo "PR #${pr} already exists for ${upstream_tag}"
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Bump upstream version
+        if: steps.upstream.outputs.needed == 'true' && steps.existing_pr.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STEPS_UPSTREAM_OUTPUTS_UPSTREAM_TAG: ${{ steps.upstream.outputs.upstream_tag }}
+        run: |
+          upstream_tag="${STEPS_UPSTREAM_OUTPUTS_UPSTREAM_TAG}"
+          gem_version=$(echo "$upstream_tag" | sed -E 's/^v//' | sed -E 's/-/./')
+          gem_tag="v${gem_version}"
+
+          # update version files
+          sed -E -i "s/^(\s+)VERSION\s+=.*/\1VERSION = \"${upstream_tag}\"/" lib/tailwindcss/ruby/upstream.rb
+          sed -E -i "s/^(\s+)VERSION\s+=.*/\1VERSION = \"${gem_version}\"/" lib/tailwindcss/ruby/version.rb
+
+          # update changelog
+          replacement_text="## ${gem_tag}\n\n* Update to [Tailwind CSS ${upstream_tag}](https:\/\/github.com\/tailwindlabs\/tailwindcss\/releases\/tag\/${upstream_tag})"
+          sed -E -i "0,/^##/{s|^##|${replacement_text}\n\n##|}" CHANGELOG.md
+
+      - name: Install dependencies
+        if: steps.upstream.outputs.needed == 'true' && steps.existing_pr.outputs.exists == 'false'
+        run: rm -f Gemfile.lock
+      - uses: ruby/setup-ruby@4eb9f110bac952a8b68ecf92e3b5c7a987594ba6 # v1.292.0
+        if: steps.upstream.outputs.needed == 'true' && steps.existing_pr.outputs.exists == 'false'
+        with:
+          ruby-version: "3.2"
+          bundler: latest
+          bundler-cache: true
+
+      - name: Verify upstream checksums
+        if: steps.upstream.outputs.needed == 'true' && steps.existing_pr.outputs.exists == 'false'
+        run: bundle exec rake download
+
+      - name: Create PR
+        if: steps.upstream.outputs.needed == 'true' && steps.existing_pr.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.TAILWINDCSS_RUBY_PR_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          STEPS_UPSTREAM_OUTPUTS_UPSTREAM_TAG: ${{ steps.upstream.outputs.upstream_tag }}
+        run: |
+          upstream_tag="${STEPS_UPSTREAM_OUTPUTS_UPSTREAM_TAG}"
+          branch="bot-dep-tailwindcss-${upstream_tag}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          git switch -c "${branch}"
+          git add lib CHANGELOG.md Gemfile*
+          git commit -m "$(printf "dep: update to Tailwind CSS %s\n\nhttps://github.com/tailwindlabs/tailwindcss/releases/tag/%s" "${upstream_tag}" "${upstream_tag}")"
+
+          git push --force -u origin "${branch}"
+
+          gh pr create \
+            --title "dep: update to Tailwind CSS ${upstream_tag}" \
+            --body "$(printf "Update to [Tailwind CSS %s](https://github.com/tailwindlabs/tailwindcss/releases/tag/%s).\n\nThis PR was created automatically by the upstream workflow." "${upstream_tag}" "${upstream_tag}")"
