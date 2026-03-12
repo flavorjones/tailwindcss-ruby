@@ -1,4 +1,73 @@
-# empty file so I can iterate on the workflow in a PR
 name: release
+
+concurrency:
+  group: "release-${{ inputs.version_tag }}"
+
 on:
   workflow_dispatch:
+    inputs:
+      version_tag:
+        description: "Version tag to release (e.g., v4.2.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: "build (${{ matrix.platform }})"
+    strategy:
+      fail-fast: true
+      matrix:
+        platform:
+          - "ruby"
+          - "aarch64-linux-gnu"
+          - "aarch64-linux-musl"
+          - "arm64-darwin"
+          - "x64-mingw-ucrt"
+          - "x64-mingw32"
+          - "x86_64-darwin"
+          - "x86_64-linux-gnu"
+          - "x86_64-linux-musl"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          ref: ${{ inputs.version_tag }}
+          persist-credentials: false
+      - run: rm -f Gemfile.lock
+      - uses: ruby/setup-ruby@4eb9f110bac952a8b68ecf92e3b5c7a987594ba6 # v1.292.0
+        with:
+          ruby-version: "4.0"
+          bundler: latest
+          bundler-cache: true
+      - env:
+          PLATFORM: ${{ matrix.platform }}
+        run: "bundle exec rake gem:${PLATFORM}"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: release-${{ inputs.version_tag }}-gem-${{ matrix.platform }}
+          path: pkg
+          retention-days: 1
+
+  push:
+    name: "Push gems to RubyGems.org"
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # for OIDC trusted publishing to RubyGems.org
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          path: gems
+          pattern: release-${{ inputs.version_tag }}-gem-*
+          merge-multiple: true
+      - uses: rubygems/configure-rubygems-credentials@bc6dd217f8a4f919d6835fcfefd470ef821f5c44 # v1.0.0
+      - name: Push gems
+        run: |
+          for gem in gems/*.gem; do
+            echo "Pushing $gem ..."
+            gem push "$gem" || echo "WARNING: Failed to push $gem (may already exist)"
+          done
