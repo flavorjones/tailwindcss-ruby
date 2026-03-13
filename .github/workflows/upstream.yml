@@ -31,6 +31,9 @@ jobs:
             upstream_tag=$(gh release view --repo tailwindlabs/tailwindcss --json tagName --jq '.tagName')
           fi
 
+          # verify the release exists upstream
+          gh release view "${upstream_tag}" --repo tailwindlabs/tailwindcss --json tagName > /dev/null
+
           current_tag=$(grep 'VERSION' lib/tailwindcss/ruby/upstream.rb | sed -E 's/.*"(.*)".*/\1/')
 
           echo "upstream_tag=${upstream_tag}" >> "$GITHUB_OUTPUT"
