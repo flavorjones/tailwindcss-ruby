@@ -4,27 +4,26 @@ This doc is a brief introduction on modifying and maintaining this gem.
 
 ## Updating to the latest upstream tailwindcss version
 
-Please don't submit PRs to the maintainer with an upstream bump.
+We have a Github Actions workflow that runs once a day to check for new upstream versions, and will
+create a new pull request with the bump. You only need to review and merged it!
 
-- [ ] run `bin/bump-upstream`
-- [ ] push the branch, create a PR
+If you really need to do it manually, you can use the `bin/bump-upstream` script, however, we may
+not be keeping that up to date, and you should double-check everything.
 
 ## Cutting a release of tailwindcss-ruby
 
-- if it's just bumping the upstream:
-  - [ ] follow the steps above
-  - [ ] when the PR is green, merge the PR
-  - [ ] create a git tag (after updating local `main`)
-- else if the gem is being changed in some other way:
-  - [ ] update `lib/tailwindcss/ruby/version.rb`
-  - [ ] update `CHANGELOG.md`
+- Prep work
+  - [ ] update `lib/tailwindcss/ruby/version.rb` if necessary
+  - [ ] update `CHANGELOG.md` if necessary
   - [ ] `git commit`
   - [ ] `git tag`
-- build the native gems:
+  - [ ] `git push && git push --tags`
+- Automated release with Github Actions workflow 
+  - [ ] go to https://github.com/flavorjones/tailwindcss-ruby/actions/workflows/release.yml
+  - [ ] run the workflow, passing in the git tag as input
+- Manual release
   - [ ] `bundle exec rake clobber` (if needed to clean up old tailwindcss executables)
   - [ ] `bundle exec rake package`
-- push source and gems:
   - [ ] `for g in pkg/*.gem ; do gem push $g ; done`
-  - [ ] `git push && git push --tags`
-- announce
-  - [ ] create a release at https://github.com/flavorjones/tailwindcss-ruby/releases
+- Announce
+  - [ ] create a release at https://github.com/flavorjones/tailwindcss-ruby/releases (this should be automated, too)
