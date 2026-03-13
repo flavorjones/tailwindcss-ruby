@@ -109,7 +109,7 @@ jobs:
           git add lib CHANGELOG.md Gemfile*
           git commit -m "$(printf "dep: update to Tailwind CSS %s\n\nhttps://github.com/tailwindlabs/tailwindcss/releases/tag/%s" "${upstream_tag}" "${upstream_tag}")"
 
-          git push -u origin "${branch}"
+          git push --force-with-lease -u origin "${branch}"
 
           gh pr create \
             --title "dep: update to Tailwind CSS ${upstream_tag}" \
