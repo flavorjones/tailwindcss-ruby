@@ -1,0 +1,4 @@
+# empty file so I can iterate on the workflow in a PR
+name: release
+on:
+  workflow_dispatch:
