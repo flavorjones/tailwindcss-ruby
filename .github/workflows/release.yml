@@ -32,7 +32,7 @@ jobs:
           - "x86_64-linux-musl"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ inputs.version_tag }}
           persist-credentials: false
@@ -45,7 +45,7 @@ jobs:
       - env:
           PLATFORM: ${{ matrix.platform }}
         run: "bundle exec rake gem:${PLATFORM}"
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: release-${{ inputs.version_tag }}-gem-${{ matrix.platform }}
           path: pkg
