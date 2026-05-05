@@ -28,7 +28,7 @@ jobs:
         with:
           persist-credentials: false
       - run: rm Gemfile.lock
-      - uses: ruby/setup-ruby@4eb9f110bac952a8b68ecf92e3b5c7a987594ba6 # v1.292.0
+      - uses: ruby/setup-ruby@0cb964fd540e0a24c900370abf38a33466142735 # v1.305.0
         with:
           ruby-version: ${{matrix.ruby}}
           bundler: latest
@@ -58,13 +58,13 @@ jobs:
         with:
           persist-credentials: false
       - run: rm Gemfile.lock
-      - uses: ruby/setup-ruby@4eb9f110bac952a8b68ecf92e3b5c7a987594ba6 # v1.292.0
+      - uses: ruby/setup-ruby@0cb964fd540e0a24c900370abf38a33466142735 # v1.305.0
         with:
           ruby-version: "3.2"
           bundler: latest
           bundler-cache: true # zizmor: ignore[cache-poisoning]
       - run: "bundle exec rake gem:${{matrix.platform}}"
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: gem-${{matrix.platform}}
           path: pkg
@@ -75,7 +75,7 @@ jobs:
     needs: [ "package" ]
     runs-on: ubuntu-latest
     steps:
-      - uses: ruby/setup-ruby@4eb9f110bac952a8b68ecf92e3b5c7a987594ba6 # v1.292.0
+      - uses: ruby/setup-ruby@0cb964fd540e0a24c900370abf38a33466142735 # v1.305.0
         with:
           ruby-version: "3.2"
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -116,7 +116,7 @@ jobs:
           name: gem-${{ matrix.platform }}
           path: pkg
       - if: ${{ matrix.runs_on }}
-        uses: ruby/setup-ruby@4eb9f110bac952a8b68ecf92e3b5c7a987594ba6 # v1.292.0
+        uses: ruby/setup-ruby@0cb964fd540e0a24c900370abf38a33466142735 # v1.305.0
         with:
           ruby-version: ${{ matrix.ruby }}
       - if: ${{ matrix.runs_on }}
