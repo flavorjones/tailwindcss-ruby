@@ -31,11 +31,11 @@ jobs:
             ruby: "3.4"
           - url: https://github.com/rails/tailwindcss-rails
             name: rails-install
-            command: "env TAILWINDCSSOPTS=--path=../../.. test/integration/user_install_test.sh"
+            command: 'env TAILWINDCSSOPTS="--path=$GITHUB_WORKSPACE" test/integration/user_install_test.sh'
             ruby: "3.4"
           - url: https://github.com/rails/tailwindcss-rails
             name: rails-upgrade
-            command: "env TAILWINDCSSOPTS=--path=../../.. test/integration/user_upgrade_test.sh"
+            command: 'env TAILWINDCSSOPTS="--path=$GITHUB_WORKSPACE" test/integration/user_upgrade_test.sh'
             ruby: "3.4"
     runs-on: ubuntu-latest
     steps:
